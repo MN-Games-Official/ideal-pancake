@@ -1,0 +1,39 @@
+
+> my-app@0.1.0 dev
+> next dev
+
+ ⚠ Port 3000 is in use, trying 3001 instead.
+ ⚠ Port 3001 is in use, trying 3002 instead.
+  ▲ Next.js 14.2.3
+  - Local:        http://localhost:3002
+
+ ✓ Starting...
+ ✓ Ready in 2.1s
+ ○ Compiling /login ...
+ ✓ Compiled /login in 6s (670 modules)
+ ✓ Compiled in 940ms (324 modules)
+ GET /login 200 in 7019ms
+ ○ Compiling /middleware ...
+ ✓ Compiled /middleware in 663ms (73 modules)
+ GET /login 200 in 179ms
+ GET /login 200 in 207ms
+ ○ Compiling /api-keys ...
+ ✓ Compiled /api-keys in 4.2s (840 modules)
+ GET /api-keys 200 in 4420ms
+ ✓ Compiled in 807ms (417 modules)
+ ✓ Compiled in 476ms (476 modules)
+ ✓ Compiled in 194ms (417 modules)
+ ✓ Compiled in 106ms (476 modules)
+ ✓ Compiled in 183ms (417 modules)
+ ✓ Compiled in 141ms (476 modules)
+ ✓ Compiled in 192ms (417 modules)
+ ✓ Compiled in 98ms (476 modules)
+ ✓ Compiled in 172ms (417 modules)
+ ✓ Compiled in 93ms (476 modules)
+ ✓ Compiled in 175ms (417 modules)
+ ✓ Compiled in 96ms (476 modules)
+ ✓ Compiled in 179ms (417 modules)
+ ✓ Compiled in 93ms (476 modules)
+ ✓ Compiled in 172ms (417 modules)
+ ✓ Compiled in 291ms (417 modules)
+ ✓ Compiled in 251ms (417 modules)

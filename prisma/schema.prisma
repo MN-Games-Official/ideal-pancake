@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// User authentication and profiles
+model User {
+  id                Int       @id @default(autoincrement())
+  email             String    @unique
+  username          String    @unique
+  password_hash     String
+  full_name         String?
+  avatar_url        String?
+  email_verified    Boolean   @default(false)
+  email_verified_at DateTime?
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @updatedAt
+
+  // Relations
+  applications   Application[]
+  rankCenters    RankCenter[]
+  apiKeys        ApiKey[]
+  passwordResets PasswordReset[]
+}
+
+// API Keys for Roblox and Polaris
+model ApiKey {
+  id            Int       @id @default(autoincrement())
+  user_id       Int
+  type          String // "roblox" | "polaris"
+  encrypted_key String    @db.Text
+  key_prefix    String // For display (e.g., "roblox_...")
+  last_used     DateTime?
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+  is_active     Boolean   @default(true)
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+}
+
+// Applications (forms)
+model Application {
+  id          String   @id @default(uuid())
+  user_id     Int
+  name        String
+  description String?  @db.Text
+  group_id    String // Roblox group ID
+  target_role String // "rank: 218" or "groups/x/roles/y"
+  pass_score  Int      @default(70)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  // Style
+  primary_color   String @default("#ff4b6e")
+  secondary_color String @default("#1f2933")
+
+  // Data serialization
+  questions_json String  @db.LongText // JSON string of questions
+  style_json     String? @db.Text // JSON of style config
+
+  user        User                    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  submissions ApplicationSubmission[]
+
+  @@index([user_id])
+  @@index([group_id])
+}
+
+// Rank Centers
+model RankCenter {
+  id          String   @id @default(uuid())
+  user_id     Int
+  name        String
+  group_id    String // Roblox group ID
+  universe_id String? // Game universe ID
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  // Data serialization
+  ranks_json String @db.LongText // JSON array of ranks
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@index([group_id])
+}
+
+// Application Submissions
+model ApplicationSubmission {
+  id               String   @id @default(uuid())
+  application_id   String
+  roblox_user_id   String // Applicant's Roblox ID
+  membership_id    String? // Roblox group membership ID
+  answers_json     String   @db.LongText // JSON of answers
+  score            Float
+  max_score        Float
+  passed           Boolean
+  feedback         String?  @db.Text
+  promotion_status String? // "pending" | "success" | "failed"
+  submitted_at     DateTime @default(now())
+
+  application Application @relation(fields: [application_id], references: [id], onDelete: Cascade)
+
+  @@index([application_id])
+  @@index([roblox_user_id])
+}
+
+// Password reset tokens
+model PasswordReset {
+  id         String   @id @default(uuid())
+  user_id    Int
+  token      String   @unique
+  expires_at DateTime
+  used       Boolean  @default(false)
+  created_at DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([token])
+}
+
+// Email verification tokens
+model EmailVerification {
+  id         String   @id @default(uuid())
+  user_id    Int      @unique
+  token      String   @unique
+  expires_at DateTime
+  used       Boolean  @default(false)
+  created_at DateTime @default(now())
+}
